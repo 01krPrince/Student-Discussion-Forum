@@ -22,5 +22,5 @@ public class User {
     private String phone;
     private String password;
     private List<Question> questionList = new ArrayList<>();
-    private List<Answer> answeredList = new ArrayList<>();  // all the answers that is answered by this user
+    private List<Answer> answeredList = new ArrayList<>();
 }

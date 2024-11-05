@@ -21,10 +21,6 @@ public class OptionController {
         return optionService.createOption(option , questionId);
     }
 
-    @DeleteMapping("/deleteOption")
-    public void deleteOption(@RequestParam String optionId , String questionId){
-        optionService.deleteOption(optionId , questionId);
-    }
 }
 
 

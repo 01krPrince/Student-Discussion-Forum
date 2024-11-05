@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface QuestionService {
 
-    public Question postQuestion(String userId , String title , String description);
+    public Question postQuestion(String userId , String title , String description , String tag);
 
     public List<Question> getAllQuestions();
 
@@ -17,4 +17,5 @@ public interface QuestionService {
     public Question save(Question question);
 
     public Question updateQuestion(String userID, String questionId, String updatedQuestion);
+
 }

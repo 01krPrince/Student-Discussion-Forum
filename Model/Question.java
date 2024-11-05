@@ -16,13 +16,14 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "question")
+@Document(collection = "Question")
 public class Question {
     @Id
     private String id;
     private String userId;
     private String title;
     private String description;
+    private String tag;
 
     private String date;
     private String time;
@@ -31,7 +32,7 @@ public class Question {
     private int noOfOption = 0;
     private List<Option> optionList = new ArrayList<>();
     private int likeCount = 0;
-    private List<User> likedByUserList = new ArrayList<>();
+    private List<String> likedByUserId = new ArrayList<>();
 
     public void setDateTime(LocalDateTime dateTime) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

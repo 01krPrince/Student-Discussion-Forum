@@ -18,9 +18,12 @@ public class QuestionController {
     }
 
     @PostMapping("/newQuestion")
-    public Question postQuestion(@RequestParam String userId , @RequestParam String title , @RequestParam String description ){
-        return questionService.postQuestion(userId , title, description);
+    public Question postQuestion(@RequestParam String userId, @RequestParam String title, @RequestParam String description,
+            @RequestParam(required = false) String tag) {
+
+        return questionService.postQuestion(userId, title, description, tag);
     }
+
 
     @PutMapping("/update")
     public Question updateQuestion(@RequestParam String userID , @RequestParam String questionId , @RequestParam String updatedQuestion){

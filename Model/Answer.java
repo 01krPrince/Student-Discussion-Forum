@@ -18,9 +18,12 @@ import java.util.List;
 public class Answer {
     @Id
     private String id;
-    private User user; // who answered the question
-    private String QuestionId;
+
+    private String  userId; // who answered the question
+
+    private String questionId;
+
     private String answer;
-    private int likeCount;
-    private List<User> likedByUserList = new ArrayList<>();
+    private int likeCount = 0;
+    private List<String > likedByUserIdList = new ArrayList<>();
 }

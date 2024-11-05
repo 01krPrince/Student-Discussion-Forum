@@ -2,6 +2,7 @@ package com.sdf.age.Service.Impl;
 
 import com.sdf.age.Model.Question;
 import com.sdf.age.Model.User;
+import com.sdf.age.Repository.OptionRepository;
 import com.sdf.age.Repository.QuestionRepository;
 import com.sdf.age.Service.QuestionService;
 import com.sdf.age.Service.UserService;
@@ -14,26 +15,30 @@ import java.util.List;
 @Service
 public class QuestionServiceImpl implements QuestionService {
 
-    UserService userService;
-    QuestionRepository questionRepository;
+    private final UserService userService;
+    private final QuestionRepository questionRepository;
+    private final OptionRepository optionRepository;
+
     @Autowired
-    public QuestionServiceImpl(UserService userService , QuestionRepository questionRepository) {
+    public QuestionServiceImpl(UserService userService, QuestionRepository questionRepository, OptionRepository optionRepository) {
         this.userService = userService;
         this.questionRepository = questionRepository;
+        this.optionRepository = optionRepository;
     }
 
     @Override
-    public Question postQuestion(String userId , String title , String description) {
+    public Question postQuestion(String userId, String title, String description , String tag) {
         User user = userService.findById(userId);
-        if(user != null && user.getUserId().equals(userId)) {
+        if (user != null && user.getUserId().equals(userId)) {
             Question newQuestion = new Question();
             newQuestion.setUserId(userId);
             newQuestion.setTitle(title);
             newQuestion.setDescription(description);
-            LocalDateTime now = LocalDateTime.now();
-            newQuestion.setDateTime(now);
+            newQuestion.setTag(tag);
 
-            newQuestion = questionRepository.save(newQuestion);
+            newQuestion.setDateTime(LocalDateTime.now());
+
+            questionRepository.save(newQuestion);
 
             user.getQuestionList().add(newQuestion);
             userService.save(user);
@@ -70,14 +75,10 @@ public class QuestionServiceImpl implements QuestionService {
             Question question = getQuestionById(questionId);
             if (question != null && question.getUserId().equals(userID)) {
                 question.setDescription(updatedQuestion);
-
                 return questionRepository.save(question);
             }
         }
-
         return null;
     }
-
-
 
 }

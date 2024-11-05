@@ -12,5 +12,4 @@ public interface OptionService {
 
     public Option getOptionById(String id);
 
-    public void deleteOption(String optionId, String questionId);
 }

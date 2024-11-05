@@ -3,8 +3,9 @@ package com.sdf.age.Service.Impl;
 import com.sdf.age.Model.Option;
 import com.sdf.age.Model.Question;
 import com.sdf.age.Repository.OptionRepository;
+import com.sdf.age.Repository.QuestionRepository;
 import com.sdf.age.Service.OptionService;
-import com.sdf.age.Service.QuestionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,58 +13,41 @@ import java.util.List;
 @Service
 public class OptionServiceImpl implements OptionService {
 
-    private final QuestionService questionService;
+    private final QuestionRepository questionRepository;  // Inject QuestionRepository directly
     private final OptionRepository optionRepository;
-    public OptionServiceImpl(QuestionService questionService , OptionRepository optionRepository){
-        this.questionService = questionService;
+
+    @Autowired
+    public OptionServiceImpl(QuestionRepository questionRepository, OptionRepository optionRepository) {
+        this.questionRepository = questionRepository;
         this.optionRepository = optionRepository;
     }
 
     @Override
-    public Option createOption(String option, String questionId) {
-        Question question = questionService.getQuestionById(questionId);
+    public Option createOption(String optionValue, String questionId) {
+        Question question = questionRepository.findById(questionId).orElse(null);
         if (question != null) {
             Option newOption = new Option();
-            newOption.setOptionValue(option);
+            newOption.setOptionValue(optionValue);
             newOption.setQuestionId(questionId);
 
-            question.getOptionList().add(newOption);
-
+            Option savedOption = optionRepository.save(newOption);
+            question.getOptionList().add(savedOption);
             question.setNoOfOption(question.getNoOfOption() + 1);
+            questionRepository.save(question);
 
-            newOption = optionRepository.save(newOption);
-
-            questionService.save(question);
-
-            return newOption;
+            return savedOption;
         }
-
         return null;
     }
 
-
     @Override
     public List<Option> getAllOptionByQuestionId(String questionId) {
-        return List.of();
+        return optionRepository.findAllByQuestionId(questionId);
     }
 
     @Override
     public Option getOptionById(String id) {
-        return null;
-    }
-
-    @Override
-    public void deleteOption(String optionId, String questionId) {
-        Question question = questionService.getQuestionById(questionId);
-        if(question != null){
-            Option option = getOptionById(optionId);
-            if (option != null){
-                optionRepository.deleteById(optionId);
-                question.getOptionList().remove(option);
-                question.setNoOfOption(question.getNoOfOption() - 1);
-                questionService.save(question);
-            }
-        }
+        return optionRepository.findById(id).orElse(null);
     }
 
 }
