@@ -1,6 +1,7 @@
-package com.sdf.age.Repository;
+package com.sdf.age.Student.Discussion.Forum.Repository;
 
-import com.sdf.age.Model.Question;
+
+import com.sdf.age.Student.Discussion.Forum.Model.Question;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

@@ -1,12 +1,14 @@
-package com.sdf.age.Service;
+package com.sdf.age.Student.Discussion.Forum.Service;
 
-import com.sdf.age.Model.Question;
+
+import com.sdf.age.Student.Discussion.Forum.Model.Question;
+import com.sdf.age.Student.Discussion.Forum.Model.QuestionResponse;
 
 import java.util.List;
 
 public interface QuestionService {
 
-    public Question postQuestion(String userId , String title , String description , String tag);
+    public Question postQuestion(QuestionResponse questionResponse);
 
     public List<Question> getAllQuestions();
 

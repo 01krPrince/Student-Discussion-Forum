@@ -1,11 +1,12 @@
-package com.sdf.age.Service;
+package com.sdf.age.Student.Discussion.Forum.Service;
 
-import com.sdf.age.Model.SignUpRequest;
-import com.sdf.age.Model.User;
+
+import com.sdf.age.Student.Discussion.Forum.Model.SignUpRequest;
+import com.sdf.age.Student.Discussion.Forum.Model.User;
 
 public interface UserService {
 
-    User signUp(SignUpRequest signUpRequest);
+    public User signUp(SignUpRequest signUpRequest);
 
     public User findById(String userId);
 
@@ -16,4 +17,7 @@ public interface UserService {
     public User save(User newUser);
 
     public User login(String phoneNumber, String password);
+
+    public void deleteUser(String userId);
+
 }

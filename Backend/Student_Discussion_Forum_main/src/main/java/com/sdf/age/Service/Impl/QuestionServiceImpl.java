@@ -1,49 +1,72 @@
-package com.sdf.age.Service.Impl;
+package com.sdf.age.Student.Discussion.Forum.Service.Impl;
 
-import com.sdf.age.Model.Question;
-import com.sdf.age.Model.User;
-import com.sdf.age.Repository.OptionRepository;
-import com.sdf.age.Repository.QuestionRepository;
-import com.sdf.age.Service.QuestionService;
-import com.sdf.age.Service.UserService;
+import com.sdf.age.Student.Discussion.Forum.Model.Question;
+import com.sdf.age.Student.Discussion.Forum.Model.QuestionResponse;
+import com.sdf.age.Student.Discussion.Forum.Model.User;
+import com.sdf.age.Student.Discussion.Forum.Repository.QuestionRepository;
+import com.sdf.age.Student.Discussion.Forum.Service.QuestionService;
+import com.sdf.age.Student.Discussion.Forum.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
 
     private final UserService userService;
     private final QuestionRepository questionRepository;
-    private final OptionRepository optionRepository;
 
     @Autowired
-    public QuestionServiceImpl(UserService userService, QuestionRepository questionRepository, OptionRepository optionRepository) {
+    public QuestionServiceImpl(UserService userService, QuestionRepository questionRepository) {
         this.userService = userService;
         this.questionRepository = questionRepository;
-        this.optionRepository = optionRepository;
     }
 
+    private static final Logger logger = Logger.getLogger(QuestionService.class.getName());
+
     @Override
-    public Question postQuestion(String userId, String title, String description , String tag) {
-        User user = userService.findById(userId);
-        if (user != null && user.getUserId().equals(userId)) {
+    public Question postQuestion(QuestionResponse questionResponse) {
+        User user = userService.findById(questionResponse.getUserId());
+        if (user != null && user.getUserId().equals(questionResponse.getUserId())) {
             Question newQuestion = new Question();
-            newQuestion.setUserId(userId);
-            newQuestion.setTitle(title);
-            newQuestion.setDescription(description);
-            newQuestion.setTag(tag);
+            newQuestion.setUserId(questionResponse.getUserId());
+            newQuestion.setUserName(user.getUserName());
+            newQuestion.setTitle(questionResponse.getTitle());
+            newQuestion.setDescription(questionResponse.getDescription());
+            newQuestion.setTag(questionResponse.getTag());
+
+            String optionsString = questionResponse.getOption();
+            List<String> optionList = newQuestion.getOptionList();
+
+            if (optionsString != null && !optionsString.isEmpty()) {
+                String[] optionsArray = optionsString.split(",,");
+
+                for (String option : optionsArray) {
+                    optionList.add(option.trim());
+                    logger.info("Added option: " + option.trim());
+                }
+            } else {
+                logger.info("No options provided in the questionResponse.");
+            }
 
             newQuestion.setDateTime(LocalDateTime.now());
 
+            // Save the new question to the repository
             questionRepository.save(newQuestion);
+            logger.info("Question saved with title: " + newQuestion.getTitle());
 
+            // Link the question to the user and save user data
             user.getQuestionList().add(newQuestion);
             userService.save(user);
 
+            logger.info("Question posted successfully with options: " + optionList);
+
             return newQuestion;
+        } else {
+            logger.warning("User not found or user ID does not match.");
         }
         return null;
     }

@@ -1,9 +1,10 @@
-package com.sdf.age.Service.Impl;
+package com.sdf.age.Student.Discussion.Forum.Service.Impl;
 
-import com.sdf.age.Model.SignUpRequest;
-import com.sdf.age.Model.User;
-import com.sdf.age.Service.UserService;
-import com.sdf.age.Repository.UserRepository;
+import com.sdf.age.Student.Discussion.Forum.Model.SignUpRequest;
+import com.sdf.age.Student.Discussion.Forum.Model.User;
+import com.sdf.age.Student.Discussion.Forum.Repository.UserRepository;
+import com.sdf.age.Student.Discussion.Forum.Service.UserService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,5 +57,10 @@ public class UserServiceImpl implements UserService {
             return user;
         }
         return null;
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        userRepository.deleteByUserId(new ObjectId(userId));
     }
 }

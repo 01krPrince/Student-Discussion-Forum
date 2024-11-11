@@ -1,25 +1,29 @@
-package com.sdf.age.Service.Impl;
+package com.sdf.age.Student.Discussion.Forum.Service.Impl;
 
-import com.sdf.age.Model.Answer;
-import com.sdf.age.Model.Question;
-import com.sdf.age.Model.User;
-import com.sdf.age.Repository.AnswerRepository;
-import com.sdf.age.Service.AnswerService;
-import com.sdf.age.Service.QuestionService;
-import com.sdf.age.Service.UserService;
+import com.sdf.age.Student.Discussion.Forum.Model.Answer;
+import com.sdf.age.Student.Discussion.Forum.Model.Question;
+import com.sdf.age.Student.Discussion.Forum.Model.User;
+import com.sdf.age.Student.Discussion.Forum.Repository.AnswerRepository;
+import com.sdf.age.Student.Discussion.Forum.Service.AnswerService;
+import com.sdf.age.Student.Discussion.Forum.Service.QuestionService;
+import com.sdf.age.Student.Discussion.Forum.Service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class  AnswerServiceImpl implements AnswerService {
+public class AnswerServiceImpl implements AnswerService {
 
     private final AnswerRepository answerRepository;
     private final UserService userService;
     private final QuestionService questionService;
-    public AnswerServiceImpl(AnswerRepository answerRepository , UserService userService , QuestionService questionService){
+
+    @Autowired
+    public AnswerServiceImpl(AnswerRepository answerRepository, UserService userService, QuestionService questionService) {
         this.answerRepository = answerRepository;
         this.userService = userService;
         this.questionService = questionService;
     }
+
     @Override
     public Answer postAnswer(String userId, String questionId, String answer) {
         User user = userService.findById(userId);
@@ -27,6 +31,7 @@ public class  AnswerServiceImpl implements AnswerService {
         if (user != null && question != null) {
             Answer newAnswer = new Answer();
             newAnswer.setUserId(userId);
+            newAnswer.setUserName(user.getUserName());
             newAnswer.setQuestionId(questionId);
             newAnswer.setAnswer(answer);
 
@@ -38,7 +43,6 @@ public class  AnswerServiceImpl implements AnswerService {
         return null;
     }
 
-
     @Override
     public void save(Answer answer) {
         answerRepository.save(answer);
@@ -48,6 +52,4 @@ public class  AnswerServiceImpl implements AnswerService {
     public Answer findById(String answerId) {
         return answerRepository.findById(answerId).orElse(null);
     }
-
-
 }

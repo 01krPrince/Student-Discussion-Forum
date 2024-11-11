@@ -1,6 +1,7 @@
-package com.sdf.age.Service;
+package com.sdf.age.Student.Discussion.Forum.Service;
 
-import com.sdf.age.Model.Answer;
+
+import com.sdf.age.Student.Discussion.Forum.Model.Answer;
 
 public interface AnswerService {
 

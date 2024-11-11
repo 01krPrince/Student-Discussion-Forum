@@ -1,7 +1,8 @@
-package com.sdf.age.Controller;
+package com.sdf.age.Student.Discussion.Forum.Controller;
 
-import com.sdf.age.Model.Question;
-import com.sdf.age.Service.QuestionService;
+import com.sdf.age.Student.Discussion.Forum.Model.Question;
+import com.sdf.age.Student.Discussion.Forum.Model.QuestionResponse;
+import com.sdf.age.Student.Discussion.Forum.Service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,21 +10,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/sdf/question")
-@CrossOrigin(origins = "*")
+@CrossOrigin("*")
 public class QuestionController {
     @Autowired
-    private final QuestionService questionService;
-    public QuestionController(QuestionService questionService){
-        this.questionService = questionService;
-    }
+    private QuestionService questionService;
 
     @PostMapping("/newQuestion")
-    public Question postQuestion(@RequestParam String userId, @RequestParam String title, @RequestParam String description,
-            @RequestParam(required = false) String tag) {
-
-        return questionService.postQuestion(userId, title, description, tag);
+    public Question postQuestion(@RequestBody QuestionResponse questionResponse) {
+        return questionService.postQuestion(questionResponse);
     }
-
 
     @PutMapping("/update")
     public Question updateQuestion(@RequestParam String userID , @RequestParam String questionId , @RequestParam String updatedQuestion){

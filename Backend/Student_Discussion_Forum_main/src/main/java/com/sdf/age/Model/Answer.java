@@ -1,4 +1,4 @@
-package com.sdf.age.Model;
+package com.sdf.age.Student.Discussion.Forum.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +19,8 @@ public class Answer {
     @Id
     private String id;
 
-    private String  userId; // who answered the question
+    private String  userId;
+    private String userName;
 
     private String questionId;
 

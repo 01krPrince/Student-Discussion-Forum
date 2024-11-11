@@ -9,8 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignUpRequest {
-    private String username;
-    private String phone;
-    private String password;
+public class QuestionResponse {
+    private String userId;
+    private String title;
+    private String description;
+    private String tag;
+    private String option;
 }
