@@ -20,7 +20,6 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-
     @Override
     public User signUp(SignUpRequest signUpRequest) {
         if(findByPhone(signUpRequest.getPhone()) == null){

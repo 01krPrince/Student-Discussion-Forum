@@ -10,6 +10,7 @@ import com.sdf.age.Student.Discussion.Forum.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDateTime;
 import java.util.logging.Logger;
@@ -32,7 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
     public Question postQuestion(QuestionResponse questionResponse) {
         User user = userService.findById(questionResponse.getUserId());
         if (user != null) {
-            if (user.getUserId().equals(questionResponse.getUserId())){
+            if (user.getUserId().equals(questionResponse.getUserId())) {
                 Question newQuestion = new Question();
                 newQuestion.setUserId(questionResponse.getUserId());
                 newQuestion.setUserName(user.getUserName());
@@ -41,37 +42,32 @@ public class QuestionServiceImpl implements QuestionService {
                 newQuestion.setTag(questionResponse.getTag());
 
                 String optionsString = questionResponse.getOption();
-                List<String> optionList = newQuestion.getOptionList();
-
                 if (optionsString != null && !optionsString.isEmpty()) {
                     String[] optionsArray = optionsString.split(",,");
 
+                    List<String> optionList = new ArrayList<>();
+                    int i=0;
                     for (String option : optionsArray) {
+                        i++;
                         optionList.add(option.trim());
-                        logger.info("Added option: " + option.trim());
                     }
-                } else {
-                    logger.info("No options provided in the questionResponse.");
+                    newQuestion.setNoOfOption(i);
+                    newQuestion.setOptionList(optionList);
                 }
 
                 newQuestion.setDateTime(LocalDateTime.now());
                 questionRepository.save(newQuestion);
-                logger.info("Question saved with title: " + newQuestion.getTitle());
 
                 user.getQuestionList().add(newQuestion);
                 userService.save(user);
 
-                logger.info("Question posted successfully with options: " + optionList);
-
                 return newQuestion;
             } else {
-                throw new MyException("Not a authorized user.");
+                throw new MyException("Not an authorized user.");
             }
-
         } else {
             throw new MyException("User not found.");
         }
-
     }
 
     @Override
