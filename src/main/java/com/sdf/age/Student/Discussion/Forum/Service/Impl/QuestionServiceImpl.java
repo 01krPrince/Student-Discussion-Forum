@@ -1,5 +1,6 @@
 package com.sdf.age.Student.Discussion.Forum.Service.Impl;
 
+import com.sdf.age.Student.Discussion.Forum.Exception.MyException;
 import com.sdf.age.Student.Discussion.Forum.Model.Question;
 import com.sdf.age.Student.Discussion.Forum.Model.QuestionResponse;
 import com.sdf.age.Student.Discussion.Forum.Model.User;
@@ -30,45 +31,47 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Question postQuestion(QuestionResponse questionResponse) {
         User user = userService.findById(questionResponse.getUserId());
-        if (user != null && user.getUserId().equals(questionResponse.getUserId())) {
-            Question newQuestion = new Question();
-            newQuestion.setUserId(questionResponse.getUserId());
-            newQuestion.setUserName(user.getUserName());
-            newQuestion.setTitle(questionResponse.getTitle());
-            newQuestion.setDescription(questionResponse.getDescription());
-            newQuestion.setTag(questionResponse.getTag());
+        if (user != null) {
+            if (user.getUserId().equals(questionResponse.getUserId())){
+                Question newQuestion = new Question();
+                newQuestion.setUserId(questionResponse.getUserId());
+                newQuestion.setUserName(user.getUserName());
+                newQuestion.setTitle(questionResponse.getTitle());
+                newQuestion.setDescription(questionResponse.getDescription());
+                newQuestion.setTag(questionResponse.getTag());
 
-            String optionsString = questionResponse.getOption();
-            List<String> optionList = newQuestion.getOptionList();
+                String optionsString = questionResponse.getOption();
+                List<String> optionList = newQuestion.getOptionList();
 
-            if (optionsString != null && !optionsString.isEmpty()) {
-                String[] optionsArray = optionsString.split(",,");
+                if (optionsString != null && !optionsString.isEmpty()) {
+                    String[] optionsArray = optionsString.split(",,");
 
-                for (String option : optionsArray) {
-                    optionList.add(option.trim());
-                    logger.info("Added option: " + option.trim());
+                    for (String option : optionsArray) {
+                        optionList.add(option.trim());
+                        logger.info("Added option: " + option.trim());
+                    }
+                } else {
+                    logger.info("No options provided in the questionResponse.");
                 }
+
+                newQuestion.setDateTime(LocalDateTime.now());
+                questionRepository.save(newQuestion);
+                logger.info("Question saved with title: " + newQuestion.getTitle());
+
+                user.getQuestionList().add(newQuestion);
+                userService.save(user);
+
+                logger.info("Question posted successfully with options: " + optionList);
+
+                return newQuestion;
             } else {
-                logger.info("No options provided in the questionResponse.");
+                throw new MyException("Not a authorized user.");
             }
 
-            newQuestion.setDateTime(LocalDateTime.now());
-
-            // Save the new question to the repository
-            questionRepository.save(newQuestion);
-            logger.info("Question saved with title: " + newQuestion.getTitle());
-
-            // Link the question to the user and save user data
-            user.getQuestionList().add(newQuestion);
-            userService.save(user);
-
-            logger.info("Question posted successfully with options: " + optionList);
-
-            return newQuestion;
         } else {
-            logger.warning("User not found or user ID does not match.");
+            throw new MyException("User not found.");
         }
-        return null;
+
     }
 
     @Override

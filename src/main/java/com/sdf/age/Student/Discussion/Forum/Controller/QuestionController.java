@@ -1,9 +1,11 @@
 package com.sdf.age.Student.Discussion.Forum.Controller;
 
+import com.sdf.age.Student.Discussion.Forum.Exception.ApiResponse;
 import com.sdf.age.Student.Discussion.Forum.Model.Question;
 import com.sdf.age.Student.Discussion.Forum.Model.QuestionResponse;
 import com.sdf.age.Student.Discussion.Forum.Service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +18,8 @@ public class QuestionController {
     private QuestionService questionService;
 
     @PostMapping("/newQuestion")
-    public Question postQuestion(@RequestBody QuestionResponse questionResponse) {
-        return questionService.postQuestion(questionResponse);
+    public ApiResponse<Question> postQuestion(@RequestBody QuestionResponse questionResponse) {
+        return new ApiResponse<>(questionService.postQuestion(questionResponse), HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/update")

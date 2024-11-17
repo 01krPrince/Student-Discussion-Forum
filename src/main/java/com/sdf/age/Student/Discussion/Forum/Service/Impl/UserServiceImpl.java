@@ -1,5 +1,6 @@
 package com.sdf.age.Student.Discussion.Forum.Service.Impl;
 
+import com.sdf.age.Student.Discussion.Forum.Exception.MyException;
 import com.sdf.age.Student.Discussion.Forum.Model.SignUpRequest;
 import com.sdf.age.Student.Discussion.Forum.Model.User;
 import com.sdf.age.Student.Discussion.Forum.Repository.UserRepository;
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
             newUser.setPassword(signUpRequest.getPassword());
             return userRepository.save(newUser);
         }
-        return null;
+        throw new MyException("Phone number exists.");
     }
 
     public User findById(String userId){
@@ -52,11 +53,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(String phoneNumber, String password) {
-        User user = this.findByPhone(phoneNumber);
-        if(user != null && user.getPassword().equals(password)){
-            return user;
+        User user = findByPhone(phoneNumber);
+        if(user != null){
+            if(user.getPassword().equals(password)){
+                return user;
+            }
+            throw new MyException("Wrong Password, Please try again");
         }
-        return null;
+        throw new MyException("Phone number not exists, Please signUp");
     }
 
     @Override

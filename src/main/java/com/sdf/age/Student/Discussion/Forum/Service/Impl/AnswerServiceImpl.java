@@ -1,5 +1,6 @@
 package com.sdf.age.Student.Discussion.Forum.Service.Impl;
 
+import com.sdf.age.Student.Discussion.Forum.Exception.MyException;
 import com.sdf.age.Student.Discussion.Forum.Model.Answer;
 import com.sdf.age.Student.Discussion.Forum.Model.Question;
 import com.sdf.age.Student.Discussion.Forum.Model.User;
@@ -28,19 +29,22 @@ public class AnswerServiceImpl implements AnswerService {
     public Answer postAnswer(String userId, String questionId, String answer) {
         User user = userService.findById(userId);
         Question question = questionService.getQuestionById(questionId);
-        if (user != null && question != null) {
-            Answer newAnswer = new Answer();
-            newAnswer.setUserId(userId);
-            newAnswer.setUserName(user.getUserName());
-            newAnswer.setQuestionId(questionId);
-            newAnswer.setAnswer(answer);
+        if (user != null) {
+            if ( question != null){
+                Answer newAnswer = new Answer();
+                newAnswer.setUserId(userId);
+                newAnswer.setUserName(user.getUserName());
+                newAnswer.setQuestionId(questionId);
+                newAnswer.setAnswer(answer);
 
-            newAnswer = answerRepository.save(newAnswer);
-            question.getAnswerList().add(newAnswer);
-            questionService.save(question);
-            return newAnswer;
+                newAnswer = answerRepository.save(newAnswer);
+                question.getAnswerList().add(newAnswer);
+                questionService.save(question);
+                return newAnswer;
+            }
+            throw new MyException("Question not found");
         }
-        return null;
+        throw new MyException("User not found");
     }
 
     @Override
